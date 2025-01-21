@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import traverse from 'json-schema-traverse'
-import { CaretDownFilled, CaretRightFilled, DeleteOutlined } from '@ant-design/icons'
+import { CaretDownFilled, CaretRightFilled, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Col, Input, Row, Select, Typography, Tooltip } from 'antd'
 import { isFunction } from 'lodash'
 import { schemaTypes } from '../../../helpers/constants'
@@ -21,6 +21,7 @@ import CommonSubCollection from './common-sub-collection'
 import Icon from '../type-icons'
 import NewPropertyButton from './new-property-button'
 import { Schema } from '../../../types'
+import validateFieldName from '../../../helpers/validate-field-names'
 
 const { Title, Text } = Typography
 const doNothing = () => {}
@@ -54,6 +55,8 @@ const CommonControls: React.FC<CommonControlsProps> = ({
     show,
     showModal,
     schemaType,
+    valid,
+    setValid,
     openModal,
     closeModal,
     handleShow,
@@ -126,13 +129,37 @@ const CommonControls: React.FC<CommonControlsProps> = ({
                 <div style={{ flex: '1 1 auto', position: 'relative' }}>
                   {isFunction(onChangeKey) && (
                     <>
-                      <Icon types={schemaType} style={{ position: 'absolute', top: '9px', left: '9px', zIndex: '1' }} />
+                      <Icon types={schemaType} style={{ position: 'absolute', top: '9px', left: '9px', zIndex: '3' }} />
                       <Input
                         style={{ padding: '4px 11px 4px 30px' }}
                         defaultValue={schemaKey}
                         disabled={rootNode || disabledInput}
-                        onBlur={onChangeFieldName}
+                        onBlur={e => {
+                          if (validateFieldName(e.target.value)) {
+                            onChangeFieldName(e)
+                            setValid(true)
+                          } else {
+                            setValid(false)
+                          }
+                        }}
                         autoFocus
+                        {...(valid
+                          ? {}
+                          : {
+                              status: 'error',
+                              prefix: (
+                                <Tooltip
+                                  title={
+                                    <ul>
+                                      <li>Must not start with a number</li>
+                                      <li>Must not contain dots(.) or other special characters</li>
+                                    </ul>
+                                  }
+                                >
+                                  <ExclamationCircleOutlined />
+                                </Tooltip>
+                              ),
+                            })}
                       />
                     </>
                   )}
@@ -183,6 +210,7 @@ const CommonControls: React.FC<CommonControlsProps> = ({
                 </Select.OptGroup>
               </Select>
             </Col>
+            {/* TODO: Uniforms autoform vaidation */}
             {/*<Tooltip title='Field Settings'>
                 <Col xs={2} xl={1}>
                   <Button
