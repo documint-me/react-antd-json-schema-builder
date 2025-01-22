@@ -25,6 +25,7 @@ const useControls = ({ schema, schemaKey = '', onChange, onChangeKey, rootNode }
     useSchemaContext()
   const autoExpand = handleGetIsInChanges(schemaKey)
   const [show, setShow] = useState(rootNode || autoExpand)
+  const [valid, setValid] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const { schemaType } = useDecodeSchema(schema)
 
@@ -69,6 +70,8 @@ const useControls = ({ schema, schemaKey = '', onChange, onChangeKey, rootNode }
     getTypeOptions,
     show,
     showModal,
+    valid,
+    setValid,
     openModal,
     closeModal,
     handleShow,

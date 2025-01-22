@@ -1,7 +1,7 @@
 {
   "name": "@documint/react-antd-json-schema-builder",
   "author": "Documint LLC",
-  "version": "0.16.46",
+  "version": "0.16.47",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
